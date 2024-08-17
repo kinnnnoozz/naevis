@@ -1,0 +1,72 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Moving GIF with p5.js</title>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/p5.js/1.4.0/p5.js"></script>
+</head>
+<body>
+
+    <script>
+        let x, y;
+        let speedX, speedY;
+        let maxSpeed = 5; 
+        let img; 
+        let img2;
+        let s = 100; 
+        let isVisible = true; // 이미지의 가시성 여부
+
+        function preload() {
+            img = loadImage('memory2_f.gif'); 
+            img2 = loadImage('img.jpg'); // 배경 이미지
+        }
+
+        function setup() {
+            createCanvas(800, 400); // 캔버스 크기를 설정
+            x = random(width - s);
+            y = random(height - s);
+            speedX = random(-maxSpeed, maxSpeed);
+            speedY = random(-maxSpeed, maxSpeed);
+        }
+
+        function draw() {
+            // 배경 이미지 그리기
+            image(img2, 0, 0, width, height);
+
+            // 이미지가 가시성이 있는 경우에만 그리기
+            if (isVisible) {
+                image(img, x, y, s, s);
+
+                // 위치 업데이트
+                x += speedX;
+                y += speedY;
+
+                // 화면의 경계를 확인하고 반사 효과 적용
+                if (x <= 0 || x >= width - s) {
+                    speedX *= -1;
+                }
+                if (y <= 0 || y >= height - s) {
+                    speedY *= -1;
+                }
+
+                // 스무스하게 방향을 조금씩 변경
+                speedX += random(-0.1, 0.1);
+                speedY += random(-0.1, 0.1);
+
+                // 속도 제한
+                speedX = constrain(speedX, -maxSpeed, maxSpeed);
+                speedY = constrain(speedY, -maxSpeed, maxSpeed);
+            }
+        }
+
+        function mousePressed() {
+            // 마우스가 이미지 안에 있는지 확인
+            if (isVisible && mouseX >= x && mouseX <= x + s && mouseY >= y && mouseY <= y + s) {
+                isVisible = false; // 이미지의 가시성을 false로 설정
+            }
+        }
+    </script>
+
+</body>
+</html>
